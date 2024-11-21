@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Estacionamiento</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="contenedor">
+        <header>
+            <h1>Bienvenido al Sistema de Estacionamiento</h1>
+            <p id="fecha"></p>
+        </header>
+        <main>
+            <div class="estacionamiento">
+                <div class="entrada-salida">
+                    <div class="salida">
+                        <p>Salida</p>
+                    </div>
+                    <div class="entrada">
+                        <p>Entrada</p>
+                    </div>
+                </div>
+                <div class="area-estacionamiento">
+                    <div class="lugares-estacionamiento">
+                        <div class="lugar" id="lugar1" estado="vacío">1</div>
+                        <div class="lugar" id="lugar2" estado="vacío">2</div>
+                        <div class="lugar" id="lugar3" estado="vacío">3</div>
+                        <div class="lugar" id="lugar4" estado="vacío">4</div>
+                        <div class="lugar" id="lugar5" estado="vacío">5</div>
+                    </div>
+                    <div class="carriles">
+                        <div class="carril entrada-carril" aria-label="Carril de entrada"></div>
+                        <div class="carril salida-carril" aria-label="Carril de salida"></div>
+                    </div>
+                    <div class="lugares-estacionamiento">
+                        <div class="lugar" id="lugar6" estado="vacío">6</div>
+                        <div class="lugar" id="lugar7" estado="vacío">7</div>
+                        <div class="lugar" id="lugar8" estado="vacío">8</div>
+                        <div class="lugar" id="lugar9" estado="vacío">9</div>
+                        <div class="lugar" id="lugar10" estado="vacío">10</div>
+                    </div>
+                </div>
+            </div>
+            <div class="estadisticas">
+                <h2>Estadísticas del Estacionamiento</h2>
+                <p id="total-lugares">Total de lugares: 10</p>
+                <p id="lugares-ocupados">Lugares ocupados: 0</p>
+                <p id="lugares-libres">Lugares libres: 10</p>
+            </div>
+            <div class="resumen-estadisticas">
+                <h2>Resumen del Día</h2>
+                <p id="total-lugares-dia">Total de lugares del día: 10</p>
+                <p id="lugares-ocupados-dia">Lugares ocupados hoy: 0</p>
+                <p id="lugares-libres-dia">Lugares libres hoy: 10</p>
+            </div>
+        </main>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="script.js"></script>
+</body>
+</html>
