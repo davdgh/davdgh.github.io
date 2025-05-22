@@ -4,8 +4,9 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Trabajadores - Sucursal</title>
-  <link rel="stylesheet" href="../css/sucursal.css">
+  <link rel="stylesheet" href="../css/calcNom.css">
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body>
   <div id="loader" class="loader-overlay">
@@ -13,14 +14,16 @@
   </div>
   <header class="header">
     <img src="../img/GC.png" alt="Logo Grupo Crazy" class="logo">
-    <h1></h1>
+    <h1>Cálculo de Nómina</h1>
   </header>
-  <button class="back-btn">← Regresar a módulos</button>
-  <button class="add-user">+ Agregar Usuario</button>
-  <button class="calc-nom">$ Calcular nómina</button>
-
-  <main class="trabajadores-container"></main>
-
-  <script src="../js/sucursal.js"></script>
+  <main>
+    <div class="inputs">
+        <input type="file" accept=".txt" id="asistencia">
+        <button class="btn-asist">Calcular nómina preliminar</button>
+    </div>
+    <div class="nomina">
+        <pre>Aquí aparecerán los datos de la nómina...</pre>
+    </div>
+  </main>
+  <script src="../js/calcNom.js"></script>
 </body>
-</html>

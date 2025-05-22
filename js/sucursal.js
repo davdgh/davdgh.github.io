@@ -118,6 +118,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     const moduleId = urlParams.get('moduleId');
     const userId = urlParams.get("userId");
     const moduleName = urlParams.get("moduleName");
+    const permissions = urlParams.get("permissions");
 
     document.querySelector("h1").textContent = moduleName;
 
@@ -247,43 +248,5 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     const btnCalcularNomina = document.querySelector('.calc-nom');
 
-    btnCalcularNomina.addEventListener('click', () => {
-        Swal.fire({
-            title: 'Subir tira de asistencia en .txt',
-            html: `
-                <form id="upload-form">
-                    <input type="file" id="asistencia-file" accept=".txt" required />
-                </form>
-            `,
-            confirmButtonText: 'Calcular nómina',
-            showCancelButton: true,
-            preConfirm: () => {
-                const fileInput = document.getElementById('asistencia-file');
-                if (!fileInput.files.length) {
-                    Swal.showValidationMessage('Por favor selecciona un archivo');
-                    return false;
-                }
-
-                const file = fileInput.files[0];
-
-                if (file.type !== "text/plain") {
-                    Swal.showValidationMessage('Por favor selecciona un archivo .txt');
-                    return false;
-                }
-
-                console.log("Archivo seleccionado:", file.name);
-
-                // Aquí puedes enviar el archivo a tu backend usando fetch y FormData
-                // const formData = new FormData();
-                // formData.append('file', file);
-
-                // fetch('/ruta/backend', {
-                //   method: 'POST',
-                //   body: formData
-                // }).then(...)
-
-                return true;
-            }
-        });
-    });
+    btnCalcularNomina.addEventListener('click', () => window.location.href = `calcNom.html?userId=${userId}&moduleName=${moduleName}&permissions=${permissions}&moduleId=${moduleId}`);
 });

@@ -45,9 +45,9 @@ document.getElementById('loginForm').addEventListener('submit', async function (
         // Puedes guardar token si viene en la respuesta: localStorage.setItem('token', data.token);
         // Redirigir según el tipo de usuario:
         if (data.permissions === 'admin') {
-          window.location.href = `./html/admin.html?userId=${data.id}`;
+          window.location.href = `./html/admin.html?userId=${data.id}&permissions=${data.permissions}`;
         } else {
-          window.location.href = `./html/perfil.html?userId=${data.id}`; // o la vista correspondiente
+          window.location.href = `./html/perfil.html?userId=${data.id}&permissions=${data.permissions}`; // o la vista correspondiente
         }
       });
     } else {
