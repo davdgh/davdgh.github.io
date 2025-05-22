@@ -19,8 +19,14 @@ document.addEventListener("DOMContentLoaded", () => {
         const dayDiv = document.createElement('div');
         dayDiv.innerHTML = `
             <label>${day}:</label>
-            <input type="time" name="entry-${day}" placeholder="Hora entrada">
-            <input type="time" name="exit-${day}" placeholder="Hora salida">
+            <label style="color: gray;">
+                Hora de entrada:
+                <input type="time" name="entry-${day}" placeholder="Hora entrada">
+            </label>
+            <label style="color: gray;">
+                Hora de salida:
+                <input type="time" name="exit-${day}" placeholder="Hora salida">
+            </label>
         `;
         scheduleContainer.appendChild(dayDiv);
     });
@@ -47,12 +53,12 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         const schedule = days.map(day => {
-            const entry = form[`entryHour-${day}`]?.value || undefined;
-            const exit = form[`exitHour-${day}`]?.value || undefined;
+            const entry = form[`entry-${day}`]?.value || undefined;
+            const exit = form[`exit-${day}`]?.value || undefined;
             return {
                 dayName: day.toLowerCase(),
-                entryHour: entry || undefined,
-                exitHour: exit || undefined
+                entryHour: entry,
+                exitHour: exit
             };
         });
 

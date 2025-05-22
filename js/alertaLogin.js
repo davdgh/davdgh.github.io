@@ -1,3 +1,13 @@
+function showLoader() {
+  document.getElementById('loader').style.display = 'flex';
+  console.log("Se entró al loader");
+}
+
+function hideLoader() {
+  document.getElementById('loader').style.display = 'none';
+  console.log("Se acabó el loader");
+}
+
 document.getElementById('loginForm').addEventListener('submit', async function (e) {
   e.preventDefault();
 
@@ -12,6 +22,8 @@ document.getElementById('loginForm').addEventListener('submit', async function (
     });
     return;
   }
+
+  showLoader();
 
   try {
     const response = await fetch('https://proyectoestadiabackend.onrender.com/api/login', {
@@ -52,5 +64,7 @@ document.getElementById('loginForm').addEventListener('submit', async function (
       title: 'Error de conexión',
       text: 'No se pudo conectar con el servidor. Intenta más tarde.'
     });
+  } finally {
+    hideLoader();
   }
 });
