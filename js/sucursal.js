@@ -19,13 +19,13 @@ async function getEmployee(userId) {
 }
 
 function showLoader() {
-  document.getElementById('loader').style.display = 'flex';
-  console.log("Se entró al loader");
+    document.getElementById('loader').style.display = 'flex';
+    console.log("Se entró al loader");
 }
 
 function hideLoader() {
-  document.getElementById('loader').style.display = 'none';
-  console.log("Se acabó el loader");
+    document.getElementById('loader').style.display = 'none';
+    console.log("Se acabó el loader");
 }
 
 async function ActualizarUsuario(e) {
