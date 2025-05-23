@@ -12,15 +12,33 @@
   <div id="loader" class="loader-overlay">
     <div class="spinner"></div>
   </div>
+
   <header class="header">
     <img src="../img/GC.png" alt="Logo Grupo cruz" class="logo">
     <h1>Panel del Administrador</h1>
   </header>
+
   <div class="acciones-admin">
-  <button id="btnAgregarSucursal">+ Agregar Sucursal</button>
-</div>
+    <button id="btnAgregarSucursal">+ Agregar Sucursal</button>
+  </div>
 
   <main class="sucursales-container"></main>
+
+  <!-- Formulario oculto para agregar promoción -->
+  <form id="promo-form" enctype="multipart/form-data" style="display: none; margin: 2rem auto; width: 90%; max-width: 500px; background-color: white; padding: 2rem; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1);">
+    <h2 style="text-align: center; margin-bottom: 1rem;">Agregar Promoción</h2>
+    <label for="titulo">Título:</label>
+    <input type="text" id="titulo" name="titulo" required><br><br>
+
+    <label for="descripcion">Descripción:</label>
+    <textarea id="descripcion" name="descripcion" required></textarea><br><br>
+
+    <label for="imagen">Imagen:</label>
+    <input type="file" id="imagen" name="imagen" accept="image/*" required><br><br>
+
+    <button type="submit">Aceptar</button>
+  </form>
+
   <script src="../js/admin.js"></script>
 </body>
 </html>

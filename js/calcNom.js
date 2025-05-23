@@ -23,67 +23,69 @@ function renderPayrollCards(data, container) {
         codigo.textContent = `Código: ${employee.code}`;
         card.appendChild(codigo);
 
-        const listaDias = document.createElement("div");
-        listaDias.classList.add("horario");
-        listaDias.innerHTML = `<h4>Días trabajados:</h4>`;
+        const tabla = document.createElement("table");
+        tabla.classList.add("tabla-nomina");
+
+        tabla.innerHTML = `
+            <thead>
+                <tr>
+                    <th>Día</th>
+                    <th>Fecha</th>
+                    <th>Entrada</th>
+                    <th>Salida</th>
+                    <th>Horas</th>
+                    <th>Observaciones</th>
+                    <th>Letra</th>
+                    <th>Justificación</th>
+                    <th>Horas extras</th>
+                    <th>Gasto (concepto/monto)</th>
+                    <th>Pago extra (concepto/monto)</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        `;
+
+        const tbody = tabla.querySelector("tbody");
 
         employee.results.forEach(dia => {
-            const diaDiv = document.createElement("div");
-            diaDiv.classList.add("dia");
-            diaDiv.innerHTML = `
-                <strong>${dia.dayName}</strong> - ${dia.date || ''} |
-                Entrada: ${dia.realEntry || '-'} |
-                Salida: ${dia.realExit || '-'} |
-                Horas: ${dia.hours.toFixed(2)} |
-                ${dia.observations ? `Observaciones: ${dia.observations} | ` : ""}
-                Letra: ${dia.letter || '-'}
-            `;
+            const fila = document.createElement("tr");
 
-            if (!dia.realEntry && !dia.realExit) {
-                const justificacionDiv = document.createElement("div");
-                justificacionDiv.innerHTML = `
-                <label>Justificar inasistencia:
+            fila.innerHTML = `
+                <td>${dia.dayName}</td>
+                <td>${dia.date || '-'}</td>
+                <td>${dia.realEntry || '-'}</td>
+                <td>${dia.realExit || '-'}</td>
+                <td>${dia.hours.toFixed(2)}</td>
+                <td>${dia.observations || '-'}</td>
+                <td>${dia.letter || '-'}</td>
+                <td>
                     <input type="text" name="justificacion-${dia.dayName}-${employee.code}" placeholder="Ej. FT">
-                </label>
-                `;
-                diaDiv.appendChild(justificacionDiv);
-            }
-
-            if (dia.hours >= 11) {
-                const extrasDiv = document.createElement("div");
-                extrasDiv.innerHTML = `
-                <label>
-                    <input type="checkbox" name="horasExtras-${dia.dayName}-${employee.code}" data-horas="${dia.hours}"> ¿Pagar horas extras?
-                </label>
-                `;
-                diaDiv.appendChild(extrasDiv);
-            }
-
-            listaDias.appendChild(diaDiv);
-        });
-
-        card.appendChild(listaDias);
-
-        const gastosCXC = document.createElement("div");
-        gastosCXC.classList.add("gastos-cxc");
-        gastosCXC.innerHTML = `<h4>Gastos por CXC</h4>`;
-
-        const btnAddGasto = document.createElement("button");
-        btnAddGasto.textContent = "+ Agregar gasto";
-        btnAddGasto.classList.add("edit-btn");
-        btnAddGasto.addEventListener("click", () => {
-            const gasto = document.createElement("div");
-            gasto.innerHTML = `
-                <input type="text" name="concepto" placeholder="Concepto">
-                <input type="number" name="monto" placeholder="Monto a descontar" step="0.01">
+                </td>
+                <td>
+                    ${(dia.hours >= 9) ? `
+                        <label>
+                            <input type="checkbox" name="horasExtras-${dia.dayName}-${employee.code}" data-horas="${dia.hours}">
+                            Pagar
+                        </label>
+                    ` : '-'}
+                </td>
+                <td>
+                    <input type="text" name="gastoConcepto-${dia.dayName}-${employee.code}" placeholder="Concepto">
+                    <input type="number" name="gastoMonto-${dia.dayName}-${employee.code}" placeholder="$" step="0.01">
+                </td>
+                <td>
+                    <input type="text" name="pagoExtraConcepto-${dia.dayName}-${employee.code}" placeholder="Concepto">
+                    <input type="number" name="pagoExtraMonto-${dia.dayName}-${employee.code}" placeholder="$" step="0.01">
+                </td>
             `;
-            gastosCXC.appendChild(gasto);
+
+            tbody.appendChild(fila);
         });
 
-        gastosCXC.appendChild(btnAddGasto);
-        card.appendChild(gastosCXC);
+        card.appendChild(tabla);
 
         const totales = document.createElement("div");
+        totales.classList.add("resumen-pago");
         totales.innerHTML = `
             <p><strong>Horas Totales:</strong> ${employee.totalHours.toFixed(2)}</p>
             <p><strong>Días efectivos trabajados:</strong> ${employee.effectiveDaysWorked}</p>
@@ -92,6 +94,7 @@ function renderPayrollCards(data, container) {
             <p><strong>Pago base:</strong> $${employee.pago.toFixed(2)}</p>
         `;
         card.appendChild(totales);
+
         container.appendChild(card);
     });
 
@@ -100,6 +103,7 @@ function renderPayrollCards(data, container) {
     btnExportar.classList.add("excel-btn");
     document.querySelector("main").appendChild(btnExportar);
 }
+
 
 function exportPayrollToExcel(data, container) {
     const exportData = [];
@@ -160,6 +164,8 @@ function exportPayrollToExcel(data, container) {
     XLSX.utils.book_append_sheet(workbook, worksheet, "Nomina Detallada");
     XLSX.writeFile(workbook, "nomina_detallada.xlsx");
 }
+
+
 
 document.addEventListener("click", async () => {
     // Obtiene todos los parámetros de la URL
