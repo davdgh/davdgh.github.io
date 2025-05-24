@@ -199,17 +199,11 @@ function getEmployeePayrollInfo(container, dia, employee) {
     const justificacion = justInput ? justInput.value.trim() : "";
     const horasExtras = extrasChk && extrasChk.checked ? Math.max(0, parseInt(extrasChk.dataset.horas || 0) - 9) : 0;
     const extraPago = horasExtras * employee.pagoPorHora;
-
     let pagoDia = extraPago + extraPayAmount - discountAmount;
 
-    console.log({ empleado: employee.name, justificacion, dia: dia.dayName, trabajado: dia.fullWorked ? "Sí" : "No" });
-    console.log(`Soy el empleado: ${employee.name} y mi pago inicial es: ${pagoDia}`);
-
     if (justificacion || dia.fullWorked) {
-        console.log(`Soy el empleado: ${employee.name} y me pagaron completo el día: ${dia.dayName}`);
         pagoDia += employee.pagoDiario;
     } else if (dia.hours > 0 && dia.hours < 9) {
-        console.log(`Soy el empleado: ${employee.name} y me pagaron por horas el día: ${dia.dayName} y trabajé: ${dia.hours}`);
         pagoDia += employee.pagoPorHora * Math.floor(dia.hours);
     }
 
