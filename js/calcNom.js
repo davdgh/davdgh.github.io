@@ -130,18 +130,19 @@ function exportPayrollToExcel(data, container) {
 
     data.forEach(employee => {
         let firstRow = true;
+
+        let pagoFinal = 0;
+        let totalDescuentos = 0;
         let totalExtras = 0;
-        let totalGastos = 0;
+        let totalHorasExtras = 0;
 
         employee.results.forEach(dia => {
-            const card = [...container.children].find(c => c.querySelector("h3").textContent === employee.name);
-            const justInput = card.querySelector(`[name="justificacion-${dia.dayName}-${employee.code}"]`);
-            const extrasChk = card.querySelector(`[name="horasExtras-${dia.dayName}-${employee.code}"]`);
-            const justificacion = justInput ? justInput.value.trim() : '';
-            const horasExtras = extrasChk && extrasChk.checked ? parseFloat(extrasChk.dataset.horas || 0) : 0;
-            const extraPago = horasExtras * employee.pagoPorHora;
+            const info = getEmployeePayrollInfo(container, dia, employee);
 
-            totalExtras += extraPago;
+            totalDescuentos += info.discountAmount;
+            totalExtras += info.extraPayAmount;
+            pagoFinal += info.pagoDia;
+            totalHorasExtras += info.extraPago;
 
             exportData.push({
                 Nombre: firstRow ? employee.name : '',
@@ -153,31 +154,33 @@ function exportPayrollToExcel(data, container) {
                 Horas: parseFloat(dia.hours.toFixed(2)),
                 Observación: dia.observations,
                 Letra: dia.letter || '-',
-                Justificación: justificacion,
-                "Horas Extras Pagadas": extraPago.toFixed(2)
+                Justificación: info.justificacion,
+                "Descripción de descuento": info.discountDescription,
+                "Monto del descuento": info.discountAmount,
+                "Descripción del pago extra": info.extraPayDescription,
+                "Monto del pago extra": info.extraPayAmount,
+                "Pago del día": info.pagoDia
             });
 
             firstRow = false;
         });
 
-        const card = [...container.children].find(c => c.querySelector("h3").textContent === employee.name);
-        const montoInputs = card.querySelectorAll('input[name="monto"]');
-        montoInputs.forEach(input => {
-            totalGastos += parseFloat(input.value || 0);
-        });
-
-        const pagoFinal = employee.pago + totalExtras - totalGastos;
+        const diasRetardados = Math.floor(employee.totalR2R3 / 3);
+        const descuentoRetardos = employee.pagoDiario * diasRetardados;
+        pagoFinal -= descuentoRetardos;
 
         exportData.push({
             Nombre: employee.name,
             Código: employee.code,
             Fecha: 'TOTAL',
-            "Pago Base": employee.pago.toFixed(2),
-            "Total Gastos": totalGastos.toFixed(2),
-            "Horas Extras Pagadas": totalExtras.toFixed(2),
-            "Pago Final": pagoFinal.toFixed(2)
-            });
+            "Pago semanal": parseFloat(employee.semanalSalary.toFixed(2)),
+            "Descuento por retardos": parseFloat(descuentoRetardos.toFixed(2)),
+            "Total de descuentos": parseFloat(totalDescuentos.toFixed(2)),
+            "Total de extras": parseFloat(totalExtras.toFixed(2)),
+            "Horas Extras Pagadas": parseFloat(totalHorasExtras.toFixed(2)),
+            "Pago Final": parseFloat(pagoFinal.toFixed(2))
         });
+    });
 
     const workbook = XLSX.utils.book_new();
     const worksheet = XLSX.utils.json_to_sheet(exportData);
@@ -188,17 +191,29 @@ function exportPayrollToExcel(data, container) {
 function getEmployeePayrollInfo(container, dia, employee) {
     const card = [...container.children].find(c => c.querySelector("h3").textContent === employee.name);
     const justInput = card.querySelector(`[name="justificacion-${dia.dayName}-${employee.code}"]`);
-    const discountDescription = card.querySelector(`[name="descConcepto-${dia.dayName}-${employee.code}"]`);
-    const discountAmount = card.querySelector(`[name="descMonto-${dia.dayName}-${employee.code}"]`);
-    const extraPayDescription = card.querySelector(`[name="pagoExtraConcepto-${dia.dayName}-${employee.code}"]`);
-    const extraPayAmount = card.querySelector(`[name="pagoExtraMonto-${dia.dayName}-${employee.code}"]`);
+    const discountDescription = card.querySelector(`[name="descConcepto-${dia.dayName}-${employee.code}"]`).value;
+    const discountAmount = parseFloat(card.querySelector(`[name="descMonto-${dia.dayName}-${employee.code}"]`).value || "0");
+    const extraPayDescription = card.querySelector(`[name="pagoExtraConcepto-${dia.dayName}-${employee.code}"]`).value;
+    const extraPayAmount = parseFloat(card.querySelector(`[name="pagoExtraMonto-${dia.dayName}-${employee.code}"]`).value || "0");
     const extrasChk = card.querySelector(`[name="horasExtras-${dia.dayName}-${employee.code}"]`);
     const justificacion = justInput ? justInput.value.trim() : "";
-    const horasExtras = extrasChk && extrasChk.checked ? parseFloat(extrasChk.dataset.horas || 0) : 0;
+    const horasExtras = extrasChk && extrasChk.checked ? Math.max(0, parseInt(extrasChk.dataset.horas || 0) - 9) : 0;
     const extraPago = horasExtras * employee.pagoPorHora;
-    let pagoDia;
 
-    return { dayName: dia.dayName, discountDescription, discountAmount, extraPayDescription, extraPayAmount, justificacion, extraPago };
+    let pagoDia = extraPago + extraPayAmount - discountAmount;
+
+    console.log({ empleado: employee.name, justificacion, dia: dia.dayName, trabajado: dia.fullWorked ? "Sí" : "No" });
+    console.log(`Soy el empleado: ${employee.name} y mi pago inicial es: ${pagoDia}`);
+
+    if (justificacion || dia.fullWorked) {
+        console.log(`Soy el empleado: ${employee.name} y me pagaron completo el día: ${dia.dayName}`);
+        pagoDia += employee.pagoDiario;
+    } else if (dia.hours > 0 && dia.hours < 9) {
+        console.log(`Soy el empleado: ${employee.name} y me pagaron por horas el día: ${dia.dayName} y trabajé: ${dia.hours}`);
+        pagoDia += employee.pagoPorHora * Math.floor(dia.hours);
+    }
+
+    return { discountDescription, discountAmount, extraPayDescription, extraPayAmount, justificacion, extraPago, pagoDia };
 }
 
 function calculatePayroll(data, container) {
