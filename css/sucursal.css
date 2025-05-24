@@ -66,6 +66,16 @@ body {
   opacity: 1;
 }
 
+.info.collapsed {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.4s ease-out, padding 0.4s ease;
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+  opacity: 0;
+  pointer-events: none;
+}
+
 .info input,
 .info select {
   width: 100%;
@@ -207,14 +217,4 @@ body {
 
 .toggle-info:hover {
   background-color: #2e2e80;
-}
-
-.info.collapsed {
-  max-height: 0;
-  overflow: hidden;
-  transition: max-height 0.4s ease-out, padding 0.4s ease;
-  padding-top: 0 !important;
-  padding-bottom: 0 !important;
-  opacity: 0;
-  pointer-events: none;
 }

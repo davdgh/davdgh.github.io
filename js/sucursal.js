@@ -162,7 +162,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
             // Contenedor de la info colapsable
             const info = document.createElement("div");
-            info.classList.add("info", "collapsed"); // <- inicia colapsado
+            info.classList.add("info", "collapsed");
 
             info.innerHTML += `
                 <input type="hidden" value="${employee.id}" name="id">

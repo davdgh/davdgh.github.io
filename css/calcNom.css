@@ -200,21 +200,59 @@ tbody tr:nth-child(2n) {
 }
 
 .tabla-nomina {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 10px;
-    font-size: 0.9rem;
+  width: 100%;
+  opacity: 1;
+  border-collapse: collapse;
+  margin-top: 10px;
+  font-size: 0.9rem;
+  transition: opacity 0.2s ease 0.2s;
 }
 
 .tabla-nomina th, .tabla-nomina td {
-    border: 1px solid #ccc;
-    padding: 6px;
-    text-align: center;
+  border: 1px solid #ccc;
+  padding: 6px;
+  text-align: center;
 }
 
 .tabla-nomina input[type="text"],
 .tabla-nomina input[type="number"] {
-    width: 90%;
-    padding: 3px;
-    font-size: 0.8rem;
+  width: 90%;
+  padding: 3px;
+  font-size: 0.8rem;
+}
+
+.toggle-info {
+  background-color: #3b3b98;
+  max-width: 25%;
+  align-self: center;
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  margin-top: 10px;
+  transition: background-color 0.2s;
+}
+
+.toggle-info:hover {
+  background-color: #2e2e80;
+}
+
+.div-nomina {
+  height: auto;
+  transition: max-height 0.4s ease-in, padding 0.4s ease;
+  max-height: 1000px;
+}
+
+.div-nomina.collapsed {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.4s ease-out 0.4s, padding 0.4s ease;
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+}
+
+.div-nomina.collapsed .tabla-nomina {
+  opacity: 0;
+  transition: opacity 0.4s ease;
 }

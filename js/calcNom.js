@@ -23,6 +23,26 @@ function renderPayrollCards(data, container) {
         codigo.textContent = `Código: ${employee.code}`;
         card.appendChild(codigo);
 
+        const toggleBtn = document.createElement("button");
+        toggleBtn.classList.add("toggle-info");
+        toggleBtn.textContent = "Mostrar detalles";
+        toggleBtn.addEventListener("click", () => {
+            const card = toggleBtn.closest('.card-trabajador');
+            const divInfo = card.querySelector(".div-nomina");
+
+            divInfo.classList.toggle("collapsed");
+
+            if (divInfo.classList.contains('collapsed')) {
+                toggleBtn.textContent = 'Mostrar información';
+            } else {
+                toggleBtn.textContent = 'Ocultar información';
+            }
+        });
+        card.appendChild(toggleBtn);
+
+        const divTabla = document.createElement("div");
+        divTabla.classList.add("div-nomina", "collapsed");
+        
         const tabla = document.createElement("table");
         tabla.classList.add("tabla-nomina");
 
@@ -38,7 +58,7 @@ function renderPayrollCards(data, container) {
                     <th>Letra</th>
                     <th>Justificación</th>
                     <th>Horas extras</th>
-                    <th>Gasto (concepto/monto)</th>
+                    <th>Descuento (concepto/monto)</th>
                     <th>Pago extra (concepto/monto)</th>
                 </tr>
             </thead>
@@ -62,7 +82,7 @@ function renderPayrollCards(data, container) {
                     <input type="text" name="justificacion-${dia.dayName}-${employee.code}" placeholder="Ej. FT">
                 </td>
                 <td>
-                    ${(dia.hours >= 9) ? `
+                    ${(dia.hours >= 10) ? `
                         <label>
                             <input type="checkbox" name="horasExtras-${dia.dayName}-${employee.code}" data-horas="${dia.hours}">
                             Pagar
@@ -70,8 +90,8 @@ function renderPayrollCards(data, container) {
                     ` : '-'}
                 </td>
                 <td>
-                    <input type="text" name="gastoConcepto-${dia.dayName}-${employee.code}" placeholder="Concepto">
-                    <input type="number" name="gastoMonto-${dia.dayName}-${employee.code}" placeholder="$" step="0.01">
+                    <input type="text" name="descConcepto-${dia.dayName}-${employee.code}" placeholder="Concepto">
+                    <input type="number" name="descMonto-${dia.dayName}-${employee.code}" placeholder="$" step="0.01">
                 </td>
                 <td>
                     <input type="text" name="pagoExtraConcepto-${dia.dayName}-${employee.code}" placeholder="Concepto">
@@ -82,7 +102,8 @@ function renderPayrollCards(data, container) {
             tbody.appendChild(fila);
         });
 
-        card.appendChild(tabla);
+        divTabla.appendChild(tabla);
+        card.appendChild(divTabla);
 
         const totales = document.createElement("div");
         totales.classList.add("resumen-pago");
@@ -103,7 +124,6 @@ function renderPayrollCards(data, container) {
     btnExportar.classList.add("excel-btn");
     document.querySelector("main").appendChild(btnExportar);
 }
-
 
 function exportPayrollToExcel(data, container) {
     const exportData = [];
@@ -165,9 +185,32 @@ function exportPayrollToExcel(data, container) {
     XLSX.writeFile(workbook, "nomina_detallada.xlsx");
 }
 
+function getEmployeePayrollInfo(container, dia, employee) {
+    const card = [...container.children].find(c => c.querySelector("h3").textContent === employee.name);
+    const justInput = card.querySelector(`[name="justificacion-${dia.dayName}-${employee.code}"]`);
+    const discountDescription = card.querySelector(`[name="descConcepto-${dia.dayName}-${employee.code}"]`);
+    const discountAmount = card.querySelector(`[name="descMonto-${dia.dayName}-${employee.code}"]`);
+    const extraPayDescription = card.querySelector(`[name="pagoExtraConcepto-${dia.dayName}-${employee.code}"]`);
+    const extraPayAmount = card.querySelector(`[name="pagoExtraMonto-${dia.dayName}-${employee.code}"]`);
+    const extrasChk = card.querySelector(`[name="horasExtras-${dia.dayName}-${employee.code}"]`);
+    const justificacion = justInput ? justInput.value.trim() : "";
+    const horasExtras = extrasChk && extrasChk.checked ? parseFloat(extrasChk.dataset.horas || 0) : 0;
+    const extraPago = horasExtras * employee.pagoPorHora;
+    let pagoDia;
 
+    return { dayName: dia.dayName, discountDescription, discountAmount, extraPayDescription, extraPayAmount, justificacion, extraPago };
+}
 
-document.addEventListener("click", async () => {
+function calculatePayroll(data, container) {
+    data.forEach(employee => {
+        employee.results.forEach(dia => {
+            const payrollInfo = getEmployeePayrollInfo(container, dia, employee);
+            const pagoBase = employee.pago;
+        });
+    });
+}
+
+document.addEventListener("DOMContentLoaded", async () => {
     // Obtiene todos los parámetros de la URL
     const urlParams = new URLSearchParams(window.location.search);
 
