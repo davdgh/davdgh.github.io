@@ -128,7 +128,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     const btn_adduser = document.querySelector(".add-user");
 
-    btn_adduser.addEventListener("click", () => window.location.href=`add_user.html?moduleId=${moduleId}&userId=${userId}`);
+    btn_adduser.addEventListener("click", () => window.location.href=`add_user.html?moduleId=${moduleId}&userId=${userId}&permissions=${permissions}`);
 
     const listaTrabajadores = document.querySelector("main.trabajadores-container");
 
