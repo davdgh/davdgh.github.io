@@ -7,10 +7,11 @@ document.addEventListener("DOMContentLoaded", () => {
     // Obtiene el valor específico de 'moduleId'
     const moduleId = urlParams.get('moduleId');
     const userId = urlParams.get("userId");
+    const permissions = urlParams.get("permissions");
 
     const btn_back = document.querySelector(".back-btn");
 
-    btn_back.addEventListener("click", () => window.location.href = `sucursal.html?moduleId=${moduleId}&userId=${userId}`);
+    btn_back.addEventListener("click", () => window.location.href = `sucursal.html?moduleId=${moduleId}&userId=${userId}&permissions=${permissions}`);
 
     const scheduleContainer = document.getElementById('scheduleContainer');
 
